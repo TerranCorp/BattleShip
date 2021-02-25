@@ -9,7 +9,13 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Ships")]
     public GameObject[] ships;
+    public List<TileScript> allTileScripts;
+    public EnemyScript enemyScript;
+    private ShipScript shipScript;
+    private List<int[]> enemyShips;
+    private int shipIndex = 0;
 
     [Header("HUD")]
     public Button nextBtn;
@@ -28,24 +34,17 @@ public class GameManager : MonoBehaviour
 
     private bool setupComplete = false;
     private bool playerTurn = true;
-    private int shipIndex = 0;
-    private ShipScript shipScript;
-    public EnemyScript enemyScript;
-    private List<int[]> enemyShips;
-    private List<GameObject> playerFires;
-    private List<GameObject> enemyFires;
-    private List<TileScript> allTileScripts;
-
-
-
-    int enemyShipCount = 5;
-    int playerShipCount = 5;
+    private List<GameObject> playerFires = new List<GameObject>();
+    private List<GameObject> enemyFires = new List<GameObject>();
+    private int enemyShipCount = 5;
+    private int playerShipCount = 5;
 
     void Start()
     {
         shipScript = ships[shipIndex].GetComponent<ShipScript>();
         nextBtn.onClick.AddListener(() => NextShipClicked());
         rotateBtn.onClick.AddListener(() => RotateShipClicked());
+        replayBtn.onClick.AddListener(() => ReplayClicked());
         enemyShips = enemyScript.PlaceEnemyShips();
     }
 
@@ -218,20 +217,21 @@ public class GameManager : MonoBehaviour
         topText.text = "The Enemy is attacking!!!";
 
         enemyScript.NPCTurn();
+
         ColorAllTiles(0);
 
         if(playerShipCount < 1)
         {
-            GameOver("Your fleet has been decimated.");
+            GameOver("Your fleet has been defeated.");
         }
-        
+
         //if (enemyShipCount < 1)
         //{
         //    GameOver("Victory! Excellent tactics, Admirable");
         //}
     }
 
-    private void EndEnemyTurn()
+    public void EndEnemyTurn()
     {
         //show player ships when enemy drops missile
 
@@ -253,7 +253,7 @@ public class GameManager : MonoBehaviour
         playerShipText.text = enemyShipCount.ToString();
         topText.text = "What are your orders, sir?";
 
-        enemyScript.NPCTurn();
+        playerTurn = true;
         ColorAllTiles(1);
 
         if (enemyShipCount < 1)
@@ -261,10 +261,6 @@ public class GameManager : MonoBehaviour
             GameOver("Victory! Excellent tactics, Admiral.");
         }
 
-        //if (enemyShipCount < 1)
-        //{
-        //    GameOver("Victory! Excellent tactics, Admirable");
-        //}
     }
 
     private void ColorAllTiles(int colorIndex)
@@ -277,9 +273,10 @@ public class GameManager : MonoBehaviour
 
     private void GameOver(string message)
     {
-        topText.text = $"{message} {winner}";
+        topText.text = $"Game Over: \n{message}";
 
         replayBtn.gameObject.SetActive(true);
+        playerTurn = false;
     }
 
     private void ReplayClicked()

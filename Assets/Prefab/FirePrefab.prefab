@@ -204,6 +204,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 391704bada1810149930fbdc92058253, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  redFire: {fileID: 6010597583395589674}
+  yellowFire: {fileID: 919911370350504576}
+  orangeFire: {fileID: 3057270451701464979}
 --- !u!1 &6010597583395589674
 GameObject:
   m_ObjectHideFlags: 0
